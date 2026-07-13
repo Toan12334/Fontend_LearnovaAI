@@ -2,73 +2,137 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Star, Zap, Shield, ArrowRight } from 'lucide-react';
 
-const plans = [
+const b2cPlans = [
   {
-    name: 'Free',
-    price: '$0',
+    name: 'Free Basic',
+    price: '0 VND',
     period: 'forever',
-    description: 'Perfect for students and occasional use',
+    description: 'Perfect for basic use',
     color: '#94A3B8',
     gradient: 'from-[#94A3B8]/10 to-transparent',
     border: 'rgba(148,163,184,0.2)',
     icon: Shield,
     features: [
-      '5 checks per month',
-      'Up to 5,000 words per check',
-      'Basic similarity detection',
-      'Email report',
-      'Standard processing speed',
-      '3 languages supported',
+      '2 scans/month',
+      'Similarity score',
+      'Summary report'
     ],
-    disabled: ['AI generation detection', 'PDF export', 'API access', 'Priority support'],
+    disabled: ['Semantic plagiarism detection', 'AI-assisted feedback', 'Batch uploads', 'Fake-reference validation'],
     cta: 'Get Started Free',
     ctaStyle: 'border border-white/20 hover:border-white/40 hover:bg-white/5',
     popular: false,
   },
   {
-    name: 'Premium',
-    price: '$19',
+    name: 'Student Plus',
+    price: '79,000 VND',
     period: 'per month',
-    description: 'Best for researchers and professionals',
+    description: 'Best for students and researchers',
     color: '#4F7CFF',
     gradient: 'from-[#4F7CFF]/15 to-[#8B5CF6]/10',
     border: 'rgba(79,124,255,0.5)',
     icon: Zap,
     features: [
-      'Unlimited checks',
-      'Up to 100,000 words per check',
-      'AI semantic analysis',
-      'AI generation detection (GPT, Claude, Gemini)',
-      'PDF + DOCX export',
-      '50+ languages',
-      'Source URL identification',
-      'Priority processing (< 3s)',
-      'Email support',
+      '30 scans/month',
+      'Semantic plagiarism detection',
+      'AI-assisted feedback',
+      'Citation suggestions',
+      'Similarity score',
+      'Summary report'
     ],
-    disabled: ['API access', 'Team management'],
-    cta: 'Start Premium',
+    disabled: ['Batch uploads', 'Classroom dashboard', 'Fake-reference validation'],
+    cta: 'Start Student Plus',
     ctaStyle: 'btn-gradient',
     popular: true,
   },
   {
-    name: 'Enterprise',
-    price: 'Custom',
-    period: 'per organization',
-    description: 'For institutions and large teams',
+    name: 'Lecturer Pro',
+    price: '199,000 VND',
+    period: 'per month',
+    description: 'For educators and heavy users',
     color: '#8B5CF6',
     gradient: 'from-[#8B5CF6]/10 to-transparent',
     border: 'rgba(139,92,246,0.3)',
     icon: Star,
     features: [
-      'Everything in Premium',
-      'Full API access',
-      'Unlimited team members',
-      'Custom integrations (LMS, CMS)',
-      'White-label reports',
-      'Dedicated account manager',
-      'SLA 99.9% uptime guarantee',
-      'GDPR & FERPA compliant',
-      'SSO / SAML support',
+      '100 scans/month',
+      'Batch uploads',
+      'Classroom dashboard',
+      'Fake-reference validation',
+      'Semantic plagiarism detection',
+      'AI-assisted feedback',
+      'Citation suggestions',
+      'Similarity score',
+      'Summary report'
+    ],
+    disabled: [],
+    cta: 'Get Lecturer Pro',
+    ctaStyle: 'border border-[#8B5CF6]/50 hover:border-[#8B5CF6] hover:bg-[#8B5CF6]/10',
+    popular: false,
+  },
+];
+
+const b2bPlans = [
+  {
+    name: 'API Starter',
+    price: '30M VND',
+    period: 'per year',
+    description: '10,000 API calls',
+    color: '#94A3B8',
+    gradient: 'from-[#94A3B8]/10 to-transparent',
+    border: 'rgba(148,163,184,0.2)',
+    icon: Shield,
+    features: [
+      'Semantic plagiarism API',
+      'Standard JSON outputs',
+      'Integration support',
+      '10,000 API calls/year'
+    ],
+    disabled: ['AI detection', 'Citation validation', 'Dedicated infrastructure', 'Custom deployment'],
+    cta: 'Start API Starter',
+    ctaStyle: 'border border-white/20 hover:border-white/40 hover:bg-white/5',
+    popular: false,
+  },
+  {
+    name: 'API Enterprise',
+    price: '100M VND',
+    period: 'per year',
+    description: '60,000 API calls',
+    color: '#4F7CFF',
+    gradient: 'from-[#4F7CFF]/15 to-[#8B5CF6]/10',
+    border: 'rgba(79,124,255,0.5)',
+    icon: Zap,
+    features: [
+      'Full API suite',
+      'AI detection',
+      'Citation validation',
+      '24/7 SLA',
+      'Semantic plagiarism API',
+      'Standard JSON outputs',
+      'Integration support',
+      '60,000 API calls/year'
+    ],
+    disabled: ['Dedicated infrastructure', 'Custom deployment'],
+    cta: 'Start Enterprise',
+    ctaStyle: 'btn-gradient',
+    popular: true,
+  },
+  {
+    name: 'Custom Volume',
+    price: 'Custom',
+    period: 'contract',
+    description: 'For large scale operations',
+    color: '#8B5CF6',
+    gradient: 'from-[#8B5CF6]/10 to-transparent',
+    border: 'rgba(139,92,246,0.3)',
+    icon: Star,
+    features: [
+      'Dedicated infrastructure',
+      'Enterprise SLA',
+      'Custom deployment',
+      'Full API suite',
+      'AI detection',
+      'Citation validation',
+      'Custom API calls volume'
     ],
     disabled: [],
     cta: 'Contact Sales',
@@ -78,7 +142,9 @@ const plans = [
 ];
 
 export default function Pricing() {
-  const [billing, setBilling] = useState('monthly');
+  const [pricingType, setPricingType] = useState('b2c'); // 'b2c' or 'b2b'
+
+  const currentPlans = pricingType === 'b2c' ? b2cPlans : b2bPlans;
 
   return (
     <section
@@ -102,43 +168,44 @@ export default function Pricing() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass border border-[#8B5CF6]/30 mb-5">
             <Star className="w-3.5 h-3.5 text-[#8B5CF6]" />
-            <span className="text-xs font-semibold text-[#94A3B8]">Simple Pricing</span>
+            <span className="text-xs font-semibold text-[#94A3B8]">Flexible Pricing</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black mb-4">
             Plans for <span className="gradient-text">Every Need</span>
           </h2>
           <p className="text-[#94A3B8] text-lg max-w-2xl mx-auto mb-8">
-            Start free, scale as you grow. No hidden fees. Cancel anytime.
+            Whether you are a student, educator, or an enterprise needing API access, we have you covered.
           </p>
 
-          {/* Billing toggle */}
+          {/* Type toggle */}
           <div className="inline-flex items-center gap-1 p-1 rounded-xl" style={{ background: '#151C2F', border: '1px solid rgba(255,255,255,0.08)' }}>
-            {['monthly', 'annual'].map((b) => (
-              <button
-                key={b}
-                onClick={() => setBilling(b)}
-                className={`px-5 py-2 text-sm font-semibold rounded-lg capitalize transition-all duration-200 ${
-                  billing === b
-                    ? 'text-white btn-gradient shadow-md'
-                    : 'text-[#94A3B8] hover:text-white'
-                }`}
-              >
-                {b}
-                {b === 'annual' && (
-                  <span className="ml-2 px-1.5 py-0.5 text-[10px] bg-[#22C55E]/20 text-[#22C55E] rounded-full">-20%</span>
-                )}
-              </button>
-            ))}
+            <button
+              onClick={() => setPricingType('b2c')}
+              className={`px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
+                pricingType === 'b2c'
+                  ? 'text-white btn-gradient shadow-md'
+                  : 'text-[#94A3B8] hover:text-white'
+              }`}
+            >
+              B2C Plans
+            </button>
+            <button
+              onClick={() => setPricingType('b2b')}
+              className={`px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
+                pricingType === 'b2b'
+                  ? 'text-white btn-gradient shadow-md'
+                  : 'text-[#94A3B8] hover:text-white'
+              }`}
+            >
+              B2B API Plans
+            </button>
           </div>
         </motion.div>
 
         {/* Pricing cards */}
         <div className="grid md:grid-cols-3 gap-6 items-start">
-          {plans.map((plan, i) => {
+          {currentPlans.map((plan, i) => {
             const Icon = plan.icon;
-            const displayPrice = billing === 'annual' && plan.price !== '$0' && plan.price !== 'Custom'
-              ? `$${Math.round(parseInt(plan.price.slice(1)) * 0.8)}`
-              : plan.price;
 
             return (
               <motion.div
@@ -159,7 +226,7 @@ export default function Pricing() {
                 {/* Popular badge */}
                 {plan.popular && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                    <span className="px-4 py-1 text-xs font-bold text-white rounded-full btn-gradient shadow-lg">
+                    <span className="px-4 py-1 text-xs font-bold text-white rounded-full btn-gradient shadow-lg whitespace-nowrap">
                       ✨ Most Popular
                     </span>
                   </div>
@@ -183,15 +250,12 @@ export default function Pricing() {
                 <div className="mb-6">
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-black" style={{ color: plan.popular ? '#fff' : plan.color }}>
-                      {displayPrice}
+                      {plan.price}
                     </span>
                     {plan.price !== 'Custom' && (
                       <span className="text-sm text-[#94A3B8]">/{plan.period}</span>
                     )}
                   </div>
-                  {billing === 'annual' && plan.price !== '$0' && plan.price !== 'Custom' && (
-                    <p className="text-xs text-[#22C55E] mt-1">Save 20% with annual billing</p>
-                  )}
                 </div>
 
                 {/* CTA button */}
@@ -248,3 +312,4 @@ export default function Pricing() {
     </section>
   );
 }
+
