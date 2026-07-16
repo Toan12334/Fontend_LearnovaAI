@@ -96,7 +96,7 @@ const b2bPlans = [
     name: 'API Enterprise',
     price: '48M VND',
     period: 'per year',
-    description: '60,000 API calls',
+    description: '48,000 API calls',
     color: '#4F7CFF',
     gradient: 'from-[#4F7CFF]/15 to-[#8B5CF6]/10',
     border: 'rgba(79,124,255,0.5)',
@@ -109,7 +109,7 @@ const b2bPlans = [
       'Semantic plagiarism API',
       'Standard JSON outputs',
       'Integration support',
-      '60,000 API calls/year'
+      '48,000 API calls/year'
     ],
     disabled: ['Dedicated infrastructure', 'Custom deployment'],
     cta: 'Start Enterprise',
