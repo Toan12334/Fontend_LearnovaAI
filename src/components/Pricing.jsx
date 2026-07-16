@@ -74,7 +74,7 @@ const b2cPlans = [
 const b2bPlans = [
   {
     name: 'API Starter',
-    price: '30M VND',
+    price: '24M VND',
     period: 'per year',
     description: '10,000 API calls',
     color: '#94A3B8',
@@ -94,7 +94,7 @@ const b2bPlans = [
   },
   {
     name: 'API Enterprise',
-    price: '100M VND',
+    price: '48M VND',
     period: 'per year',
     description: '60,000 API calls',
     color: '#4F7CFF',
