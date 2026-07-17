@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Zap, FileText, Globe, CheckCircle2, AlertTriangle, Clock, BarChart3 } from 'lucide-react';
+import { Upload, Zap, FileText, Globe, CheckCircle2, AlertTriangle, Clock, BarChart3, X } from 'lucide-react';
+import Pricing from './Pricing';
 
 const sampleSources = [
   { icon: '📖', name: 'Wikipedia', url: 'en.wikipedia.org', similarity: 34, color: '#4F7CFF' },
@@ -29,13 +30,24 @@ export default function LiveDemo() {
   const [text, setText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analyzed, setAnalyzed] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
   const fileRef = useRef(null);
 
   const handleCheck = () => {
+    let currentText = text;
     if (!text.trim() && !analyzed) {
       // Insert sample text for demo
       setText(SAMPLE_TEXT);
+      currentText = SAMPLE_TEXT;
     }
+
+    const wordCount = currentText.trim().split(/\s+/).filter(word => word.length > 0).length;
+
+    if (wordCount > 500) {
+      setShowPricingModal(true);
+      return;
+    }
+
     setIsAnalyzing(true);
     setAnalyzed(false);
     setTimeout(() => {
@@ -56,6 +68,45 @@ export default function LiveDemo() {
       className="py-24 relative overflow-hidden section-glow"
       aria-label="Live plagiarism demo checker"
     >
+      {/* Pricing Modal */}
+      <AnimatePresence>
+        {showPricingModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-7xl bg-[#0F172A] rounded-3xl border border-white/10 shadow-2xl my-8 flex flex-col"
+              style={{ maxHeight: '90vh' }}
+            >
+              <div className="flex justify-between items-center p-6 border-b border-white/10">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-1">Text Limit Exceeded</h3>
+                  <p className="text-sm text-[#F59E0B]">
+                    <AlertTriangle className="inline w-4 h-4 mr-1" />
+                    Your text has {text.trim().split(/\s+/).filter(word => word.length > 0).length} words. The free demo is limited to 500 words.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowPricingModal(false)}
+                  className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="overflow-y-auto flex-1">
+                <Pricing />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Background */}
       <div
         className="orb w-[500px] h-[500px] opacity-8 top-0 right-[-150px]"

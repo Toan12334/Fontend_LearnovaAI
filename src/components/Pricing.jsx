@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Check, Star, Zap, Shield, ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Check, Star, Zap, Shield, ArrowRight, X, CreditCard, Smartphone } from 'lucide-react';
 
 const b2cPlans = [
   {
@@ -143,6 +143,7 @@ const b2bPlans = [
 
 export default function Pricing() {
   const [pricingType, setPricingType] = useState('b2c'); // 'b2c' or 'b2b'
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   const currentPlans = pricingType === 'b2c' ? b2cPlans : b2bPlans;
 
@@ -259,14 +260,17 @@ export default function Pricing() {
                 </div>
 
                 {/* CTA button */}
-                <a
-                  href="#"
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setSelectedPlan(plan);
+                  }}
                   className={`w-full flex items-center justify-center gap-2 py-3 text-sm font-semibold text-white rounded-xl transition-all duration-200 mb-6 ${plan.ctaStyle}`}
                   aria-label={`${plan.cta} - ${plan.name} plan`}
                 >
                   {plan.cta}
                   <ArrowRight className="w-4 h-4" />
-                </a>
+                </button>
 
                 {/* Divider */}
                 <div className="w-full h-px mb-5" style={{ background: 'rgba(255,255,255,0.06)' }} />
@@ -309,6 +313,67 @@ export default function Pricing() {
           All plans include SSL encryption • GDPR compliant • Cancel anytime • No contracts
         </motion.p>
       </div>
+
+      {/* Payment Modal */}
+      <AnimatePresence>
+        {selectedPlan && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md bg-[#151C2F] rounded-3xl border border-white/10 shadow-2xl my-8 overflow-hidden"
+            >
+              <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                <div>
+                  <h3 className="text-xl font-bold text-white">Select Payment Method</h3>
+                  <p className="text-sm text-[#94A3B8]">
+                    For <span className="font-semibold text-white">{selectedPlan.name}</span> plan ({selectedPlan.price})
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedPlan(null)}
+                  className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-4">
+                {[
+                  { id: 'momo', name: 'MoMo E-Wallet', icon: Smartphone, color: '#A50064' },
+                  { id: 'zalopay', name: 'ZaloPay', icon: Smartphone, color: '#0068FF' },
+                  { id: 'vnpay', name: 'VNPay', icon: Smartphone, color: '#005BAA' },
+                  { id: 'card', name: 'Credit / Debit Card', icon: CreditCard, color: '#4F7CFF' },
+                ].map((method) => (
+                  <button
+                    key={method.id}
+                    className="w-full flex items-center gap-4 p-4 rounded-xl border border-white/10 hover:border-white/30 hover:bg-white/5 transition-all group"
+                  >
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/5 group-hover:scale-110 transition-transform">
+                      <method.icon className="w-5 h-5" style={{ color: method.color }} />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="font-semibold text-white">{method.name}</div>
+                      <div className="text-xs text-[#94A3B8]">Instant processing</div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-[#475569] group-hover:text-white transition-colors" />
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-4 bg-white/5 border-t border-white/10 text-center text-xs text-[#94A3B8]">
+                Secure payment gateway provided by our partners.
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
